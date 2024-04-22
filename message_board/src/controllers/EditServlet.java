@@ -6,15 +6,14 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import models.Message;
 import utils.DBUtil;
 
- @WebServlet("/show")
-public class ShowServlet extends HttpServlet {
+@WebServlet("/edit")
+public class EditServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
-    public ShowServlet() {
+    public EditServlet() {
         super();
     }
 
@@ -27,10 +26,14 @@ public class ShowServlet extends HttpServlet {
 
         em.close();
 
-        // メッセージデータをリクエストスコープにセットしてshow.jspを呼び出す
+        // メッセージ情報とセッションIDをリクエストスコープに登録
         request.setAttribute("message", m);
+        request.setAttribute("_token", request.getSession().getId());
 
-        var rd = request.getRequestDispatcher("/WEB-INF/views/messages/show.jsp");
+        // メッセージIDをセッションスコープに登録
+        request.getSession().setAttribute("message_id", m.getId());
+
+        var rd = request.getRequestDispatcher("/WEB-INF/views/messages/edit.jsp");
         rd.forward(request, response);
     }
 
